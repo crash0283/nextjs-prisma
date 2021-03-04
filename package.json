@@ -8,8 +8,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@prisma/client": "^2.18.0",
+    "babel-plugin-superjson-next": "^0.2.3",
+    "gray-matter": "^4.0.2",
     "next": "10.0.7",
     "react": "17.0.1",
     "react-dom": "17.0.1"
+  },
+  "devDependencies": {
+    "prisma": "^2.18.0"
   }
 }

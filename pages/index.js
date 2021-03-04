@@ -1,65 +1,75 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Link from "next/link"
+import Layout, { siteTitle } from '../components/layout'
+import utilStyles from '../styles/utils.module.css'
+import {useState} from "react"
 
-export default function Home() {
+import prisma from "../lib/prisma"
+
+// import { getSortedPostsData } from "../lib/posts"
+
+export const getStaticProps = async () => {
+  const allEmps = await prisma.employees.findMany()
+  return {
+    props: {
+      allEmps
+    },
+    revalidate: 1
+  }
+}
+
+export default function Home({ allEmps }) {
+  const [name,setName] = useState("")
+  const [gender,setGender] = useState("")
+  const [contactNumber,setContactNumber] = useState("")
+  const [salary,setSalary] = useState("")
+  const [yearsInCompany,setYearsInCompany] = useState("")
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const body = { name, gender, contactNumber, salary, yearsInCompany }
+      await fetch('/api/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      setName("")
+      setGender("")
+      setSalary("")
+      setContactNumber("")
+      setYearsInCompany("")
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
-    <div className={styles.container}>
+    <Layout home>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>{siteTitle}</title>
       </Head>
+      <form onSubmit={handleSubmit}>
+        <input type="text" onChange={(e) => setName(e.target.value)} value={name} placeholder="Enter Name"/><br />
+        <input type="text" onChange={(e) => setGender(e.target.value)} value={gender} placeholder="Enter Gender"/><br />
+        <input type="text" onChange={(e) => setContactNumber(e.target.value)} value={contactNumber} placeholder="Enter Contact Number"/><br />
+        <input type="text" onChange={(e) => setSalary(e.target.value)} value={salary} placeholder="Enter Salary"/><br />
+        <input type="text" onChange={(e) => setYearsInCompany(e.target.value)} value={yearsInCompany} placeholder="Enter Years In Company"/><br />
+        <input type="submit" value="Create Employee"/>
+      </form>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Employees</h2>
+        <ul className={utilStyles.list}>
+          {allEmps.map(({ id, em_name }) => (
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+            <li className={utilStyles.listItem} key={id}>
+              <Link href={`/posts/${id}`}>
+                {em_name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </Layout>
   )
 }
