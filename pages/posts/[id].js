@@ -34,6 +34,7 @@ export default function Post({ data }) {
                 <title>{data[0].em_name}</title>
             </Head>
             <article>
+                <button>Update Employee</button>
                 <h1 className={utilStyles.headingXl}>Name: {data[0].em_name}</h1>
                 <br />
                 Employee ID: {data[0].id}
