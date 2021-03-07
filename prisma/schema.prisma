@@ -8,25 +8,11 @@ datasource db {
 }
 
 model employees {
-  id                                           Int           @id @default(autoincrement())
-  em_name                                      String        @db.VarChar(255)
-  gender                                       String?       @db.Char(1)
-  contact_number                               String?       @db.VarChar(255)
-  salary                                       Float         @db.Float
-  years_in_company                             Int
-  date_created                                 DateTime      @default(now()) @db.Timestamp(0)
-  mentorships_employeesTomentorships_mentee_id mentorships[] @relation("employeesTomentorships_mentee_id")
-  mentorships_employeesTomentorships_mentor_id mentorships[] @relation("employeesTomentorships_mentor_id")
-}
-
-model mentorships {
-  mentor_id                                  Int
-  mentee_id                                  Int
-  status                                     String    @db.VarChar(255)
-  project                                    String    @db.VarChar(255)
-  employees_employeesTomentorships_mentee_id employees @relation("employeesTomentorships_mentee_id", fields: [mentee_id], references: [id])
-  employees_employeesTomentorships_mentor_id employees @relation("employeesTomentorships_mentor_id", fields: [mentor_id], references: [id])
-
-  @@id([mentor_id, mentee_id, project])
-  @@index([mentee_id], name: "fk2")
+  id               Int      @id @default(autoincrement())
+  em_name          String   @db.VarChar(255)
+  gender           String?  @db.Char(1)
+  contact_number   String?  @db.VarChar(255)
+  salary           Float    @db.Float
+  years_in_company Int
+  date_created     DateTime @default(now()) @db.Timestamp(0)
 }
