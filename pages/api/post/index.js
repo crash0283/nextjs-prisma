@@ -1,18 +1,19 @@
-import prisma from "../../../lib/prisma"
+import Employee from "../../../models/employee"
 
-export default async function handle(req, res) {
-  
-    const { name, gender, contactNumber, salary, yearsInCompany } = req.body
+export default async function handler(req, res) {
 
-    const result = await prisma.employees.create({
-        data: {
-          em_name: name,
-          gender: gender,
-          contact_number: contactNumber,
-          salary: parseFloat(salary),
-          years_in_company: parseInt(yearsInCompany)
-        },
-      })
-      res.json(result)
-  }
+  const { name, gender, contactNumber, salary, yearsInCompany } = req.body
+
+  const user = new Employee({
+    em_name: name,
+    gender: gender,
+    salary: salary,
+    contact_number: contactNumber,
+    years_in_company: yearsInCompany
+  })
+  // Create new user
+  const usercreated = await user.save()
+
+  return res.status(200).send(usercreated)
+}
   
